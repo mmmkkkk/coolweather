@@ -1,5 +1,6 @@
 package com.example.android.coolweater.db;
 
+import com.google.gson.annotations.SerializedName;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -13,9 +14,11 @@ public class County extends BaseModel implements Serializable {
     @PrimaryKey
     private int id;
     @Column
+    @SerializedName("name")
     private String countyName;
     @Column
-    private int weatherId;
+    @SerializedName("weather_id")
+    private String weatherId;
     @ForeignKey(stubbedRelationship = true)
     private City city;
 
@@ -35,11 +38,11 @@ public class County extends BaseModel implements Serializable {
         this.countyName = countyName;
     }
 
-    public int getWeatherId() {
+    public String getWeatherId() {
         return weatherId;
     }
 
-    public void setWeatherId(int weatherId) {
+    public void setWeatherId(String weatherId) {
         this.weatherId = weatherId;
     }
 

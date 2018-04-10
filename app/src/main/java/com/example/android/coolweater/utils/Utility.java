@@ -6,9 +6,13 @@ import android.util.Log;
 import com.example.android.coolweater.db.City;
 import com.example.android.coolweater.db.County;
 import com.example.android.coolweater.db.Province;
+import com.example.android.coolweater.gson.Weather;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -63,5 +67,18 @@ public class Utility {
             return true;
         }
         return false;
+    }
+
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject object = new JSONObject(response);
+            JSONArray jsonArray = object.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            Log.d("Utility","weatherContent" + weatherContent);
+            return gson.fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

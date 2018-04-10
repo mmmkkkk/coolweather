@@ -2,7 +2,9 @@ package com.example.android.coolweater;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -84,10 +86,23 @@ public class ChooseArerFragment extends Fragment {
                     queryCounties();
                 }else if(currentLevel == LEVEL_COUNTY){
                     String weatherId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+//                    Log.d("ChooseArerFragment","weatherId : " + weatherId);
+                    if(getActivity() instanceof MainActivity){
+                        Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                        intent.putExtra("weather_id",weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if(getActivity() instanceof WeatherActivity){
+//                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+//                        editor.remove("")
+//                        editor.putString("we","");
+//                        editor.apply();
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.getDrawerLayout().closeDrawers();
+                        activity.getSwipeRefresh().setRefreshing(true);
+                        activity.requsetWeather(weatherId);
+                    }
+
                 }
             }
         });
@@ -136,7 +151,7 @@ public class ChooseArerFragment extends Fragment {
                 .from(City.class)
                 .where(City_Table.province_id.eq(selectedProvince.getId()))
                 .queryList();
-        Log.d("ChooseArerFragment","cityList.size() = " + cityList.size());
+//        Log.d("ChooseArerFragment","cityList.size() = " + cityList.size());
         if(cityList.size()>0){
             dataList.clear();
             for (City city :cityList){
@@ -189,7 +204,7 @@ public class ChooseArerFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
-                Log.d("ChooseArerFragment","responseText = " + responseText);
+//                Log.d("ChooseArerFragment","responseText = " + responseText);
                 boolean result = false;
                 if("province".equals(type)){
                     result = Utility.handleProvinceResponse(responseText);
